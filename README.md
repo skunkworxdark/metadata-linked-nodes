@@ -36,11 +36,9 @@ Delete the `metadata-linked-nodes` folder. Or rename it to `_metadata-linked-nod
 - Add more metadata types
 # Example Usage
 
-[Metadata from image Test.json](https://github.com/skunkworxdark/metadata-linked-nodes/files/13742707/Metadata.from.image.Test.json)
-![image](https://github.com/skunkworxdark/metadata-linked-nodes/assets/21961335/9ab81941-5fc8-4b0b-b19a-871df5c3bd92)
+[metadata_from_image_workflow.json](workflows/metadata_from_image_workflow.json)
+![workflow](images/workflow-image_to_metadata.png)
 <BR>
-[Metadata Item Linked Test.json](https://github.com/skunkworxdark/metadata-linked-nodes/files/13742716/Metadata.Item.Linked.Test.json)
-![image](https://github.com/skunkworxdark/metadata-linked-nodes/assets/21961335/028e500b-364a-4f3b-9401-ccda7399c2c2)
 
-
-
+[metadata_Item_linked_workflow.json](workflows/metadata_Item_linked_workflow.json)
+![workflow](images/workflow-metadata_linked.png)
