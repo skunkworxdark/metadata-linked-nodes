@@ -1,7 +1,7 @@
 # `metadata-linked-nodes` for InvokeAI (v3.5+)
 A set of InvokeAI nodes for Metadata. Collect Metadata from with an iterate node & Extract metadata from an image.
 
-- `Metadata Item Linked` - Allows collecting of metadata while witin iterate nodes.
+- `Metadata Item Linked` - Allows collecting of metadata while within iterate nodes with no need for collect nodes or conversion to metadata.
 - `Metadata From Image` - Provides Metadata from an image.
 - `Metadata To String` - Extracts a String value of a label from metadata.
 - `Metadata To Integer` - Extracts an Integer value of a label from metadata.
