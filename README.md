@@ -1,4 +1,4 @@
-[Metadata Item Linked Test.json](https://github.com/skunkworxdark/metadata-linked-nodes/files/13742706/Metadata.Item.Linked.Test.json)# metadata-linked-nodes for InvokeAI (v3.5+)
+# `metadata-linked-nodes` for InvokeAI (v3.5+)
 A set of InvokeAI nodes for Metadata. Collect Metadata from with an iterate node & Extract metadata from an image.
 
 - `Metadata Item Linked` - Allows collecting of metadata while witin iterate nodes.
