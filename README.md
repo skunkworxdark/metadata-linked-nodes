@@ -20,7 +20,7 @@ There are two options to install the nodes:
     git clone https://github.com/skunkworxdark/metadata-linked-nodes.git
     ```
 
-2. Manually download [metadata-linked.py](metadata-linked.py) & [__init__.py](__init__.py) then place them in a subfolder under `invokeai/nodes`. 
+2. Manually download [metadata_linked.py](metadata_linked.py) & [__init__.py](__init__.py) then place them in a subfolder under `invokeai/nodes`. 
 
 ### <ins>Update</ins><BR>
 Run a `git pull` from the `metadata-linked-nodes` folder.
