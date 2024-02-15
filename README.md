@@ -7,7 +7,26 @@ A set of InvokeAI nodes for Metadata. Collect Metadata from with an iterate node
 - `Metadata To Integer` - Extracts an Integer value of a label from metadata.
 - `Metadata To Float` - Extracts a Float value of a label from metadata.
 - `Metadata To Scheduler` - Extracts a Scheduler value of a label from metadata.
+- `Metadata To Bool` - Extracts Bool types from metadata
+- `Metadata To Model` - Extracts model types from metadata
+- `Metadata To SDXL Model` - Extracts SDXL model types from metadata
+- `Denoise Latents + Metadata` - This is an inherited version of the existing `Denoise Latents` node but with a metadata input and output. This will work in conjunction with the `metadata-linked` node.  It will provide metadata for most of the normal fields so you will only really need external metadata nodes for prompts and VAE. The following labels will be gathered from the denoise node:
+  - seed
+  - width
+  - height
+  - steps
+  - cfg_scale
+  - cfg_rescale
+  - denoise_start
+  - denoise_end
+  - scheduler
+  - model
+  - controlnets
+  - ipAdapters
+  - t2iAdapters
+  - loras
 
+- added cfg_rescale_multiplier, model, VAE, seamless_x and seemless_y as built-in labels for the metadata_linked node.
 
 ## Usage
 ### <ins>Install</ins><BR>
@@ -34,6 +53,7 @@ Delete the `metadata-linked-nodes` folder. Or rename it to `_metadata-linked-nod
 
 ## ToDo
 - Add more metadata types
+- More example workflows
 # Example Usage
 
 [metadata_from_image_workflow.json](workflows/metadata_from_image_workflow.json)
@@ -42,3 +62,7 @@ Delete the `metadata-linked-nodes` folder. Or rename it to `_metadata-linked-nod
 
 [metadata_Item_linked_workflow.json](workflows/metadata_Item_linked_workflow.json)
 ![workflow](images/workflow-metadata_linked.png)
+<BR>
+
+Denoise Latents + Metadata Example
+![Workflow](images/workflow-denoise_latents_metadata.png)
