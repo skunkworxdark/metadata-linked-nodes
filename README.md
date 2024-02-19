@@ -8,8 +8,10 @@ A set of InvokeAI nodes for Metadata. Collect Metadata from with an iterate node
 - `Metadata To Float` - Extracts a Float value of a label from metadata.
 - `Metadata To Scheduler` - Extracts a Scheduler value of a label from metadata.
 - `Metadata To Bool` - Extracts Bool types from metadata
-- `Metadata To Model` - Extracts model types from metadata.  To use the Model output you will need a combination of the `String to Model`, `Model to String` and `model loader` node from the XY Grid Nodes pack.
+- `Metadata To Model` - Extracts model types from metadata. 
 - `Metadata To SDXL Model` - Extracts SDXL model types from metadata
+- `Metadata To LoRAs` - Extracts Loras from metadata. 
+- `Metadata To SDXL LoRAs` - Extracts SDXL Loras from metadata
 - `Denoise Latents + Metadata` - This is an inherited version of the existing `Denoise Latents` node but with a metadata input and output. This will work in conjunction with the `metadata-linked` node.  It will provide metadata for most of the normal fields so you will only really need external metadata nodes for prompts and VAE. The following labels will be gathered from the denoise node:
   - seed
   - width
