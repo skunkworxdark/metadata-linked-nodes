@@ -12,6 +12,9 @@ A set of InvokeAI nodes for Metadata. Collect Metadata from with an iterate node
 - `Metadata To SDXL Model` - Extracts SDXL model types from metadata
 - `Metadata To LoRAs` - Extracts Loras from metadata. 
 - `Metadata To SDXL LoRAs` - Extracts SDXL Loras from metadata
+- `Metadata To ControlNets` - Extracts ControNets from metadata
+- `Metadata To IP-Adapters` - Extracts IP-Adapters from metadata
+- `Metadata To T2I-Adapters` - Extracts T2I-Adapters from metadata
 - `Denoise Latents + Metadata` - This is an inherited version of the existing `Denoise Latents` node but with a metadata input and output. This will work in conjunction with the `metadata-linked` node.  It will provide metadata for most of the normal fields so you will only really need external metadata nodes for prompts and VAE. The following labels will be gathered from the denoise node:
   - seed
   - width
