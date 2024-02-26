@@ -65,6 +65,10 @@ Delete the `metadata-linked-nodes` folder. Or rename it to `_metadata-linked-nod
 ![workflow](images/workflow-image_to_metadata.png)
 <BR>
 
+[metadata_from_image_workflow_sdxl](workflows/metadata_from_image_workflow_sdxl.json)
+![workflow](images/workflow-image_to_metadata_sdxl.png)
+<BR>
+
 [metadata_Item_linked_workflow.json](workflows/metadata_Item_linked_workflow.json)
 ![workflow](images/workflow-metadata_linked.png)
 <BR>
