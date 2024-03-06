@@ -43,7 +43,6 @@ from invokeai.app.invocations.model import (
     SDXLLoraLoaderOutput,
     UNetField,
     VaeField,
-    VAEModelField,
     VAEOutput,
 )
 from invokeai.app.invocations.primitives import (
@@ -125,18 +124,36 @@ CORE_LABELS_VAE = Literal[
 ]
 
 
-def append_list(new_item, items, item_cls):
-    """Add an item to an exiting item or list of items then output as a list of items."""
+def append_list(item_cls: type[Any], new_item: Any, items: Union[Any, list[Any], None] = None) -> list[Any]:
+    """Combines any number of items or lists into a single list,
+    ensuring consistency in type.
 
-    result = []
-    if items is None or (isinstance(items, list) and len(items) == 0):
-        pass
-    elif isinstance(items, item_cls):
+    Args:
+        item_cls: The expected type of elements in the list.
+        items: An existing list or single item of type `item_cls`.
+        new_items: Additional item(s) to append. (default=None)
+
+    Returns:
+        The updated list containing valid items.
+
+    Raises:
+        ValueError: If any item in the list or new_item is not of the expected type.
+    """
+
+    if not isinstance(new_item, item_cls):
+        raise ValueError(f"Invalid new_item type in: {new_item},  expected {item_cls}")
+
+    if items is None:
+        return [new_item]
+
+    result: list[item_cls] = []
+
+    if isinstance(items, item_cls):
         result.append(items)
     elif isinstance(items, list) and all(isinstance(i, item_cls) for i in items):
         result.extend(items)
     else:
-        raise ValueError(f"Invalid adapter list format: {items}")
+        raise ValueError(f"Invalid items type in: {items},  expected {item_cls}")
 
     result.append(new_item)
     return result
@@ -162,7 +179,11 @@ def validate_custom_label(
 
 
 def extract_model_key(
-    metadata: dict[Any, Any], label: str, default_key: str, model_type: ModelType, context: InvocationContext
+    metadata: dict[str, Any],
+    label: Union[str, None],
+    default_key: str,
+    model_type: ModelType,
+    context: InvocationContext,
 ) -> str:
     """
     Extracts a model key from the metadata based on the given label.
@@ -218,8 +239,8 @@ class MetadataItemLinkedInvocation(BaseInvocation, WithMetadata):
         k = self.custom_label if self.label == CUSTOM_LABEL else self.label
         v = self.value.vae if isinstance(self.value, VaeField) else self.value
 
-        data = {} if self.metadata is None else self.metadata.model_dump()
-        data.update({k: v})
+        data: Dict[str, Any] = {} if self.metadata is None else self.metadata.root
+        data.update({str(k): v})
         data.update({"app_version": __version__})
 
         return MetadataOutput(metadata=MetadataField.model_validate(data))
@@ -239,10 +260,10 @@ class MetadataFromImageInvocation(BaseInvocation):
     image: ImageField = InputField(description=FieldDescriptions.image)
 
     def invoke(self, context: InvocationContext) -> MetadataOutput:
-        data = {}
+        data: Dict[str, Any] = {}
         image_metadata = context.images.get_metadata(self.image.image_name)
         if image_metadata is not None:
-            data.update(image_metadata.model_dump())
+            data.update(image_metadata.root)
 
         return MetadataOutput(metadata=MetadataField.model_validate(data))
 
@@ -273,8 +294,8 @@ class MetadataToStringInvocation(BaseInvocation, WithMetadata):
     _validate_custom_label = model_validator(mode="after")(validate_custom_label)
 
     def invoke(self, context: InvocationContext) -> StringOutput:
-        data = {} if self.metadata is None else self.metadata.model_dump()
-        output = data.get(self.custom_label if self.label == CUSTOM_LABEL else self.label, self.default_value)
+        data: Dict[str, Any] = {} if self.metadata is None else self.metadata.root
+        output = data.get(str(self.custom_label if self.label == CUSTOM_LABEL else self.label), self.default_value)
 
         return StringOutput(value=str(output))
 
@@ -305,8 +326,8 @@ class MetadataToIntegerInvocation(BaseInvocation, WithMetadata):
     _validate_custom_label = model_validator(mode="after")(validate_custom_label)
 
     def invoke(self, context: InvocationContext) -> IntegerOutput:
-        data = {} if self.metadata is None else self.metadata.model_dump()
-        output = data.get(self.custom_label if self.label == CUSTOM_LABEL else self.label, self.default_value)
+        data: Dict[str, Any] = {} if self.metadata is None else self.metadata.root
+        output = data.get(str(self.custom_label if self.label == CUSTOM_LABEL else self.label), self.default_value)
 
         return IntegerOutput(value=int(output))
 
@@ -337,8 +358,8 @@ class MetadataToFloatInvocation(BaseInvocation, WithMetadata):
     _validate_custom_label = model_validator(mode="after")(validate_custom_label)
 
     def invoke(self, context: InvocationContext) -> FloatOutput:
-        data = {} if self.metadata is None else self.metadata.model_dump()
-        output = data.get(self.custom_label if self.label == CUSTOM_LABEL else self.label, self.default_value)
+        data: Dict[str, Any] = {} if self.metadata is None else self.metadata.root
+        output = data.get(str(self.custom_label if self.label == CUSTOM_LABEL else self.label), self.default_value)
 
         return FloatOutput(value=float(output))
 
@@ -369,8 +390,8 @@ class MetadataToBoolInvocation(BaseInvocation, WithMetadata):
     _validate_custom_label = model_validator(mode="after")(validate_custom_label)
 
     def invoke(self, context: InvocationContext) -> BooleanOutput:
-        data = {} if self.metadata is None else self.metadata.model_dump()
-        output = data.get(self.custom_label if self.label == CUSTOM_LABEL else self.label, self.default_value)
+        data: Dict[str, Any] = {} if self.metadata is None else self.metadata.root
+        output = data.get(str(self.custom_label if self.label == CUSTOM_LABEL else self.label), self.default_value)
 
         return BooleanOutput(value=bool(output))
 
@@ -405,8 +426,8 @@ class MetadataToSchedulerInvocation(BaseInvocation, WithMetadata):
     _validate_custom_label = model_validator(mode="after")(validate_custom_label)
 
     def invoke(self, context: InvocationContext) -> SchedulerOutput:
-        data = {} if self.metadata is None else self.metadata.model_dump()
-        output = data.get(self.custom_label if self.label == CUSTOM_LABEL else self.label, self.default_value)
+        data: Dict[str, Any] = {} if self.metadata is None else self.metadata.root
+        output = data.get(str(self.custom_label if self.label == CUSTOM_LABEL else self.label), self.default_value)
 
         return SchedulerOutput(scheduler=output)
 
@@ -504,7 +525,7 @@ class MetadataToModelInvocation(BaseInvocation, WithMetadata):
             vae=VaeField(
                 vae=ModelInfo(
                     key=model.key,
-                    submodel_type=SubModelType.Vae,
+                    submodel_type=SubModelType.VAE,
                 ),
             ),
         )
@@ -590,7 +611,7 @@ class MetadataToSDXLModelInvocation(BaseInvocation, WithMetadata):
             vae=VaeField(
                 vae=ModelInfo(
                     key=model.key,
-                    submodel_type=SubModelType.Vae,
+                    submodel_type=SubModelType.VAE,
                 ),
             ),
         )
@@ -610,7 +631,7 @@ class LatentsMetaOutput(LatentsOutput, MetadataOutput):
 )
 class DenoiseLatentsMetaInvocation(DenoiseLatentsInvocation, WithMetadata):
     def invoke(self, context: InvocationContext) -> LatentsMetaOutput:
-        def _to_json(obj):
+        def _to_json(obj: Union[Any, list[Any]]):
             if not isinstance(obj, list):
                 obj = [obj]
 
@@ -619,7 +640,7 @@ class DenoiseLatentsMetaInvocation(DenoiseLatentsInvocation, WithMetadata):
                 for item in obj
             ]
 
-        def _loras_to_json(obj):
+        def _loras_to_json(obj: Union[Any, list[Any]]):
             if not isinstance(obj, list):
                 obj = [obj]
 
@@ -632,7 +653,7 @@ class DenoiseLatentsMetaInvocation(DenoiseLatentsInvocation, WithMetadata):
 
         obj = super().invoke(context)
 
-        md = {} if self.metadata is None else self.metadata.model_dump()
+        md: Dict[str, Any] = {} if self.metadata is None else self.metadata.root
         md.update({"width": obj.width})
         md.update({"height": obj.height})
         md.update({"steps": self.steps})
@@ -689,7 +710,7 @@ class MetadataToVAEInvocation(BaseInvocation, WithMetadata):
     def invoke(self, context: InvocationContext) -> VAEOutput:
         data = {} if self.metadata is None else self.metadata.root
         label = self.custom_label if self.label == CUSTOM_LABEL else self.label
-        model_key = extract_model_key(data, label, self.default_value.vae.key, ModelType.Vae, context)
+        model_key = extract_model_key(data, label, self.default_value.vae.key, ModelType.VAE, context)
 
         if not context.models.exists(model_key):
             raise Exception(f"Unknown vae: {model_key}!")
@@ -738,12 +759,12 @@ class MetadataToLorasInvocation(BaseInvocation, WithMetadata):
             output.clip = copy.deepcopy(self.clip)
 
         for lora in loras:
-            model_key = extract_model_key(lora, "lora", "", ModelType.Lora, context)
+            model_key = extract_model_key(lora, "lora", "", ModelType.LoRA, context)
             weight = float(lora["weight"])
             if not context.models.exists(model_key):
                 raise Exception(f"Unknown lora: {model_key}!")
 
-            if self.unet is not None:
+            if output.unet is not None:
                 output.unet.loras.append(
                     LoraInfo(
                         key=model_key,
@@ -752,7 +773,7 @@ class MetadataToLorasInvocation(BaseInvocation, WithMetadata):
                     )
                 )
 
-            if self.clip is not None:
+            if output.clip is not None:
                 output.clip.loras.append(
                     LoraInfo(
                         key=model_key,
@@ -814,12 +835,12 @@ class MetadataToSDXLLorasInvocation(BaseInvocation, WithMetadata):
             output.clip2 = copy.deepcopy(self.clip2)
 
         for lora in loras:
-            model_key = extract_model_key(lora, "lora", "", ModelType.Lora, context)
+            model_key = extract_model_key(lora, "lora", "", ModelType.LoRA, context)
             weight = float(lora["weight"])
             if not context.models.exists(model_key):
                 raise Exception(f"Unknown lora: {model_key}!")
 
-            if self.unet is not None:
+            if output.unet is not None:
                 output.unet.loras.append(
                     LoraInfo(
                         key=model_key,
@@ -828,7 +849,7 @@ class MetadataToSDXLLorasInvocation(BaseInvocation, WithMetadata):
                     )
                 )
 
-            if self.clip is not None:
+            if output.clip is not None:
                 output.clip.loras.append(
                     LoraInfo(
                         key=model_key,
@@ -837,7 +858,7 @@ class MetadataToSDXLLorasInvocation(BaseInvocation, WithMetadata):
                     )
                 )
 
-            if self.clip2 is not None:
+            if output.clip2 is not None:
                 output.clip2.loras.append(
                     LoraInfo(
                         key=model_key,
@@ -906,7 +927,7 @@ class MetadataToControlnetsInvocation(BaseInvocation, WithMetadata):
             )
             i = cn.invoke(context)
 
-            controls = append_list(i.control, controls, ControlField)
+            controls = append_list(ControlField, i.control, controls)
 
         return MDControlListOutput(control_list=controls)
 
@@ -966,7 +987,7 @@ class MetadataToIPAdaptersInvocation(BaseInvocation, WithMetadata):
             )
             i = ipa.invoke(context)
 
-            adapters = append_list(i.ip_adapter, adapters, IPAdapterField)
+            adapters = append_list(IPAdapterField, i.ip_adapter, adapters)
 
         return MDIPAdapterListOutput(ip_adapter_list=adapters)
 
@@ -1027,6 +1048,6 @@ class MetadataToT2IAdaptersInvocation(BaseInvocation, WithMetadata):
             )
             i = t2i.invoke(context)
 
-            adapters = append_list(i.t2i_adapter, adapters, T2IAdapterField)
+            adapters = append_list(T2IAdapterField, i.t2i_adapter, adapters)
 
         return MDT2IAdapterListOutput(t2i_adapter_list=adapters)
