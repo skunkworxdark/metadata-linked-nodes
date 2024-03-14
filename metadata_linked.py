@@ -30,7 +30,7 @@ from invokeai.app.invocations.ip_adapter import (
     IPAdapterInvocation,
 )
 from invokeai.app.invocations.latent import DenoiseLatentsInvocation, SchedulerOutput
-from invokeai.app.invocations.metadata import LoRAMetadataField, MetadataOutput, ModelMetadataField
+from invokeai.app.invocations.metadata import LoRAMetadataField, MetadataOutput
 from invokeai.app.invocations.model import (
     CLIPField,
     LoRAField,
@@ -453,7 +453,11 @@ class MetadataToSchedulerInvocation(BaseInvocation, WithMetadata):
 class MetadataToModelOutput(BaseInvocationOutput):
     """String to main model output"""
 
-    model: ModelIdentifierField = OutputField(description=FieldDescriptions.main_model, title="Model")
+    model: ModelIdentifierField = OutputField(
+        description=FieldDescriptions.main_model,
+        title="Model",
+        ui_type=UIType.MainModel,
+    )
     name: str = OutputField(description="Model Name", title="Name")
     unet: UNetField = OutputField(description=FieldDescriptions.unet, title="UNet")
     vae: VAEField = OutputField(description=FieldDescriptions.vae, title="VAE")
@@ -465,7 +469,9 @@ class MetadataToSDXLModelOutput(BaseInvocationOutput):
     """String to SDXL main model output"""
 
     model: ModelIdentifierField = OutputField(
-        description=FieldDescriptions.main_model, title="Model", ui_type=UIType.SDXLMainModel
+        description=FieldDescriptions.main_model,
+        title="Model",
+        ui_type=UIType.SDXLMainModel,
     )
     name: str = OutputField(description="Model Name", title="Name")
     unet: UNetField = OutputField(description=FieldDescriptions.unet, title="UNet")
@@ -497,6 +503,7 @@ class MetadataToModelInvocation(BaseInvocation, WithMetadata):
     )
     default_value: ModelIdentifierField = InputField(
         description="The default model to use if not found in the metadata",
+        ui_type=UIType.MainModel,
     )
 
     _validate_custom_label = model_validator(mode="after")(validate_custom_label)
@@ -549,8 +556,9 @@ class MetadataToSDXLModelInvocation(BaseInvocation, WithMetadata):
         description=FieldDescriptions.metadata_item_label,
         input=Input.Direct,
     )
-    default_value: ModelMetadataField = InputField(
-        description="The default SDXL Model to use if not found in the metadata", ui_type=UIType.SDXLMainModel
+    default_value: ModelIdentifierField = InputField(
+        description="The default SDXL Model to use if not found in the metadata",
+        ui_type=UIType.SDXLMainModel,
     )
 
     _validate_custom_label = model_validator(mode="after")(validate_custom_label)
@@ -617,16 +625,9 @@ class DenoiseLatentsMetaInvocation(DenoiseLatentsInvocation, WithMetadata):
 
             output: list[dict[str, Any]] = []
             for item in obj:
-                lora_model = context.models.get_config(item.lora)
                 output.append(
                     LoRAMetadataField(
-                        model=ModelMetadataField(
-                            key=lora_model.key,
-                            hash=lora_model.hash,
-                            name=lora_model.name,
-                            base=lora_model.base,
-                            type=lora_model.type,
-                        ),
+                        model=item.lora,
                         weight=item.weight,
                     ).model_dump(exclude_none=True, exclude={"id", "type", "is_intermediate", "use_cache"})
                 )
