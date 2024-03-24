@@ -1,5 +1,7 @@
-# `metadata-linked-nodes` for InvokeAI (v3.5+)
-A set of InvokeAI nodes for Metadata. Collect Metadata from with an iterate node & Extract metadata from an image.
+# `metadata-linked-nodes` for InvokeAI
+Discord Link :- [metadata-linked-nodes](https://discord.com/channels/1020123559063990373/1187455869055664209)
+
+A set of InvokeAI nodes for Metadata. Collect Metadata from with an workflow. Extract metadata from an image.
 
 - `Metadata Item Linked` - Allows collecting of metadata while within iterate nodes with no need for collect nodes or conversion to metadata.
 - `Metadata From Image` - Provides Metadata from an image.
@@ -40,21 +42,28 @@ There are two options to install the nodes:
 1. **Recommended**: Git clone into the `invokeai/nodes` directory. This allows updating via `git pull`.
 
     - In the InvokeAI nodes folder, run:
-    ```bash
-    git clone https://github.com/skunkworxdark/metadata-linked-nodes.git
-    ```
+
+      For Latest Invoke (4.0+):
+      ```bash
+      git clone https://github.com/skunkworxdark/metadata-linked-nodes.git
+      ```
+      For Invoke (3.5-3.7):
+      ```bash
+      git clone https://github.com/skunkworxdark/metadata-linked-nodes/tree/invoke-3.7
+      ```
+
 
 2. Manually download [metadata_linked.py](metadata_linked.py) & [__init__.py](__init__.py) then place them in a subfolder under `invokeai/nodes`. 
 
 ### <ins>Update</ins><BR>
 Run a `git pull` from the `metadata-linked-nodes` folder.
 
-Or run `update.bat`(windows) or `update.`sh`(Linux).
+Or run `update.bat`(windows) or `update.sh`(Linux).
 
 For manual installs, download and replace the files.
 
 ### <ins>Remove</ins><BR>
-Delete the `metadata-linked-nodes` folder. Or rename it to `_metadata-linked-nodes`` so InvokeAI will ignore it.
+Delete the `metadata-linked-nodes` folder. Or rename it to `_metadata-linked-nodes` so InvokeAI will ignore it.
 
 ## ToDo
 - Add more metadata types
