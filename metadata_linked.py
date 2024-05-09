@@ -3,55 +3,46 @@ from typing import Any, Dict, Literal, Optional, Union
 
 from pydantic import model_validator
 
-from invokeai.app.invocations.baseinvocation import (
+from invokeai.app.invocations.controlnet_image_processors import ControlField, ControlNetInvocation
+from invokeai.app.invocations.ip_adapter import IPAdapterField, IPAdapterInvocation
+from invokeai.app.invocations.latent import DenoiseLatentsInvocation
+from invokeai.app.invocations.metadata import LoRAMetadataField
+from invokeai.app.invocations.model import LoRAField
+from invokeai.app.invocations.t2i_adapter import T2IAdapterField, T2IAdapterInvocation
+from invokeai.invocation_api import (
+    SCHEDULER_NAME_VALUES,
     BaseInvocation,
     BaseInvocationOutput,
+    BooleanOutput,
     Classification,
-    Input,
-    InvocationContext,
-    invocation,
-    invocation_output,
-)
-from invokeai.app.invocations.constants import SCHEDULER_NAME_VALUES
-from invokeai.app.invocations.controlnet_image_processors import (
-    ControlField,
-    ControlNetInvocation,
-)
-from invokeai.app.invocations.fields import (
-    FieldDescriptions,
-    InputField,
-    MetadataField,
-    OutputField,
-    UIType,
-    WithMetadata,
-)
-from invokeai.app.invocations.ip_adapter import (
-    IPAdapterField,
-    IPAdapterInvocation,
-)
-from invokeai.app.invocations.latent import DenoiseLatentsInvocation, SchedulerOutput
-from invokeai.app.invocations.metadata import LoRAMetadataField, MetadataOutput
-from invokeai.app.invocations.model import (
     CLIPField,
-    LoRAField,
+    FieldDescriptions,
+    FloatOutput,
+    ImageField,
+    Input,
+    InputField,
+    IntegerOutput,
+    InvocationContext,
+    LatentsOutput,
     LoRALoaderOutput,
+    MetadataField,
+    MetadataOutput,
     ModelIdentifierField,
+    ModelType,
+    OutputField,
+    SchedulerOutput,
     SDXLLoRALoaderOutput,
+    StringOutput,
+    SubModelType,
+    UIType,
     UNetField,
     VAEField,
     VAEOutput,
+    WithMetadata,
+    __version__,
+    invocation,
+    invocation_output,
 )
-from invokeai.app.invocations.primitives import (
-    BooleanOutput,
-    FloatOutput,
-    ImageField,
-    IntegerOutput,
-    LatentsOutput,
-    StringOutput,
-)
-from invokeai.app.invocations.t2i_adapter import T2IAdapterField, T2IAdapterInvocation
-from invokeai.backend.model_manager.config import ModelType, SubModelType
-from invokeai.version import __version__
 
 CUSTOM_LABEL: str = "* CUSTOM LABEL *"
 
