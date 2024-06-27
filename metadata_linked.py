@@ -4,8 +4,8 @@ from typing import Any, Dict, Literal, Optional, Union
 from pydantic import model_validator
 
 from invokeai.app.invocations.controlnet_image_processors import ControlField, ControlNetInvocation
+from invokeai.app.invocations.denoise_latents import DenoiseLatentsInvocation
 from invokeai.app.invocations.ip_adapter import IPAdapterField, IPAdapterInvocation
-from invokeai.app.invocations.latent import DenoiseLatentsInvocation
 from invokeai.app.invocations.metadata import LoRAMetadataField
 from invokeai.app.invocations.model import LoRAField
 from invokeai.app.invocations.t2i_adapter import T2IAdapterField, T2IAdapterInvocation
