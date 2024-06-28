@@ -43,11 +43,12 @@ There are two options to install the nodes:
 
     - In the InvokeAI nodes folder, run:
 
-      For Latest Invoke (4.0+):
+      For Latest Invoke (4.2.5+):
       ```bash
       git clone https://github.com/skunkworxdark/metadata-linked-nodes.git
       ```
-      For Invoke (3.5-3.7):
+      For older Invoke compatible versions see available [tags](https://github.com/skunkworxdark/metadata-linked-nodes/tags)
+      e.g for invoke v3.5-3.7 use tag `invoke-3.7`:
       ```bash
       git clone https://github.com/skunkworxdark/metadata-linked-nodes/tree/invoke-3.7
       ```
