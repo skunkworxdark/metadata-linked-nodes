@@ -188,8 +188,13 @@ def extract_model_key(
 
     if label in metadata:
         if "key" in metadata[label]:
-            return metadata[label]["key"]
-        elif "model_name" in metadata[label]:
+            if context.models.exists(metadata[label]["key"]):
+                return metadata[label]["key"]
+        if "name" in metadata[label]:
+            search_model = context.models.search_by_attrs(name=metadata[label]["name"], type=model_type)
+            if len(search_model) > 0:
+                return search_model[0].key
+        if "model_name" in metadata[label]:
             search_model = context.models.search_by_attrs(name=metadata[label]["model_name"], type=model_type)
             if len(search_model) > 0:
                 return search_model[0].key
@@ -700,7 +705,7 @@ class MetadataToVAEInvocation(BaseInvocation, WithMetadata):
     title="Metadata To LoRAs",
     tags=["metadata"],
     category="metadata",
-    version="1.1.0",
+    version="1.1.1",
     classification=Classification.Beta,
 )
 class MetadataToLorasInvocation(BaseInvocation, WithMetadata):
@@ -736,31 +741,32 @@ class MetadataToLorasInvocation(BaseInvocation, WithMetadata):
             output.clip = copy.deepcopy(self.clip)
 
         for lora in loras:
-            model_key = extract_model_key(lora, "lora", "", ModelType.LoRA, context)
-            model = get_model(model_key, context)
-            weight = float(lora["weight"])
+            model_key = extract_model_key(lora, "model", "", ModelType.LoRA, context)
+            if model_key != "":
+                model = get_model(model_key, context)
+                weight = float(lora["weight"])
 
-            if output.unet is not None:
-                if any(lora.lora.key == model_key for lora in output.unet.loras):
-                    context.logger.info(f'LoRA "{model_key}" already applied to unet')
-                else:
-                    output.unet.loras.append(
-                        LoRAField(
-                            lora=model,
-                            weight=weight,
+                if output.unet is not None:
+                    if any(lora.lora.key == model_key for lora in output.unet.loras):
+                        context.logger.info(f'LoRA "{model_key}" already applied to unet')
+                    else:
+                        output.unet.loras.append(
+                            LoRAField(
+                                lora=model,
+                                weight=weight,
+                            )
                         )
-                    )
 
-            if output.clip is not None:
-                if any(lora.lora.key == model_key for lora in output.clip.loras):
-                    context.logger.info(f'LoRA "{model_key}" already applied to clip')
-                else:
-                    output.clip.loras.append(
-                        LoRAField(
-                            lora=model,
-                            weight=weight,
+                if output.clip is not None:
+                    if any(lora.lora.key == model_key for lora in output.clip.loras):
+                        context.logger.info(f'LoRA "{model_key}" already applied to clip')
+                    else:
+                        output.clip.loras.append(
+                            LoRAField(
+                                lora=model,
+                                weight=weight,
+                            )
                         )
-                    )
 
         return output
 
@@ -770,7 +776,7 @@ class MetadataToLorasInvocation(BaseInvocation, WithMetadata):
     title="Metadata To SDXL LoRAs",
     tags=["metadata"],
     category="metadata",
-    version="1.1.0",
+    version="1.1.1",
     classification=Classification.Beta,
 )
 class MetadataToSDXLLorasInvocation(BaseInvocation, WithMetadata):
@@ -815,42 +821,43 @@ class MetadataToSDXLLorasInvocation(BaseInvocation, WithMetadata):
             output.clip2 = copy.deepcopy(self.clip2)
 
         for lora in loras:
-            model_key = extract_model_key(lora, "lora", "", ModelType.LoRA, context)
-            model = get_model(model_key, context)
-            weight = float(lora["weight"])
+            model_key = extract_model_key(lora, "model", "", ModelType.LoRA, context)
+            if model_key != "":
+                model = get_model(model_key, context)
+                weight = float(lora["weight"])
 
-            if output.unet is not None:
-                if any(lora.lora.key == model_key for lora in output.unet.loras):
-                    context.logger.info(f'LoRA "{model_key}" already applied to unet')
-                else:
-                    output.unet.loras.append(
-                        LoRAField(
-                            lora=model,
-                            weight=weight,
+                if output.unet is not None:
+                    if any(lora.lora.key == model_key for lora in output.unet.loras):
+                        context.logger.info(f'LoRA "{model_key}" already applied to unet')
+                    else:
+                        output.unet.loras.append(
+                            LoRAField(
+                                lora=model,
+                                weight=weight,
+                            )
                         )
-                    )
 
-            if output.clip is not None:
-                if any(lora.lora.key == model_key for lora in output.clip.loras):
-                    context.logger.info(f'LoRA "{model_key}" already applied to clip')
-                else:
-                    output.clip.loras.append(
-                        LoRAField(
-                            lora=model,
-                            weight=weight,
+                if output.clip is not None:
+                    if any(lora.lora.key == model_key for lora in output.clip.loras):
+                        context.logger.info(f'LoRA "{model_key}" already applied to clip')
+                    else:
+                        output.clip.loras.append(
+                            LoRAField(
+                                lora=model,
+                                weight=weight,
+                            )
                         )
-                    )
 
-            if output.clip2 is not None:
-                if any(lora.lora.key == model_key for lora in output.clip2.loras):
-                    context.logger.info(f'LoRA "{model_key}" already applied to clip')
-                else:
-                    output.clip2.loras.append(
-                        LoRAField(
-                            lora=model,
-                            weight=weight,
+                if output.clip2 is not None:
+                    if any(lora.lora.key == model_key for lora in output.clip2.loras):
+                        context.logger.info(f'LoRA "{model_key}" already applied to clip')
+                    else:
+                        output.clip2.loras.append(
+                            LoRAField(
+                                lora=model,
+                                weight=weight,
+                            )
                         )
-                    )
 
         return output
 
