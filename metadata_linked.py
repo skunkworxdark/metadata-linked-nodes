@@ -5,6 +5,7 @@ from pydantic import model_validator
 
 from invokeai.app.invocations.controlnet_image_processors import ControlField, ControlNetInvocation
 from invokeai.app.invocations.denoise_latents import DenoiseLatentsInvocation
+from invokeai.app.invocations.flux_denoise import FluxDenoiseInvocation
 from invokeai.app.invocations.ip_adapter import IPAdapterField, IPAdapterInvocation
 from invokeai.app.invocations.metadata import LoRAMetadataField
 from invokeai.app.invocations.model import LoRAField
@@ -655,6 +656,49 @@ class DenoiseLatentsMetaInvocation(DenoiseLatentsInvocation, WithMetadata):
             md.update({"loras": _loras_to_json(self.unet.loras)})
         if self.noise is not None:
             md.update({"seed": self.noise.seed})
+
+        params = obj.__dict__.copy()
+        del params["type"]
+
+        return LatentsMetaOutput(**params, metadata=MetadataField.model_validate(md))
+
+
+@invocation(
+    "flux_denoise_meta",
+    title="Flux Denoise + metadata",
+    tags=["flux", "latents", "denoise", "txt2img", "t2i", "t2l", "img2img", "i2i", "l2l"],
+    category="latents",
+    version="1.0.0",
+)
+class FluxDenoiseLatentsMetaInvocation(FluxDenoiseInvocation, WithMetadata):
+    def invoke(self, context: InvocationContext) -> LatentsMetaOutput:
+        def _loras_to_json(obj: Union[Any, list[Any]]):
+            if not isinstance(obj, list):
+                obj = [obj]
+
+            output: list[dict[str, Any]] = []
+            for item in obj:
+                output.append(
+                    LoRAMetadataField(
+                        model=item.lora,
+                        weight=item.weight,
+                    ).model_dump(exclude_none=True, exclude={"id", "type", "is_intermediate", "use_cache"})
+                )
+            return output
+
+        obj = super().invoke(context)
+
+        md: Dict[str, Any] = {} if self.metadata is None else self.metadata.root
+        md.update({"width": obj.width})
+        md.update({"height": obj.height})
+        md.update({"steps": self.num_steps})
+        md.update({"guidance": self.guidance})
+        md.update({"denoising_start": self.denoising_start})
+        md.update({"denoising_end": self.denoising_end})
+        md.update({"model": self.transformer.transformer})
+        md.update({"seed": self.seed})
+        if len(self.transformer.loras) > 0:
+            md.update({"loras": _loras_to_json(self.transformer.loras)})
 
         params = obj.__dict__.copy()
         del params["type"]

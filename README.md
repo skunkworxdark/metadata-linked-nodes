@@ -32,6 +32,16 @@ A set of InvokeAI nodes for Metadata. Collect Metadata from with an workflow. Ex
   - ipAdapters
   - t2iAdapters
   - loras
+- `Flux Denoise + metadata` - This follows the same idea as the SD/SDXL denoise latents node. 
+  - seed
+  - width
+  - height
+  - steps
+  - guideance
+  - denoise_start
+  - denoise_end
+  - model
+  - loras
 
 - added cfg_rescale_multiplier, model, VAE, seamless_x and seemless_y as built-in labels for the metadata_linked node.
 
