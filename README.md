@@ -12,8 +12,9 @@ A set of InvokeAI nodes for Metadata. Collect Metadata from with an workflow. Ex
 - `Metadata To Bool` - Extracts Bool types from metadata
 - `Metadata To Model` - Extracts model types from metadata. 
 - `Metadata To SDXL Model` - Extracts SDXL model types from metadata
-- `Metadata To LoRAs` - Extracts Loras from metadata. 
+- `Metadata To LoRAs` - Extracts SD1.5 Loras from metadata. 
 - `Metadata To SDXL LoRAs` - Extracts SDXL Loras from metadata
+- `Metadata To LoRA Collection` - Creates a Lora Collection from metadata that can be fed into the Lora Collection Loader nodes.
 - `Metadata To ControlNets` - Extracts ControNets from metadata
 - `Metadata To IP-Adapters` - Extracts IP-Adapters from metadata
 - `Metadata To T2I-Adapters` - Extracts T2I-Adapters from metadata
@@ -42,6 +43,9 @@ A set of InvokeAI nodes for Metadata. Collect Metadata from with an workflow. Ex
   - denoise_end
   - model
   - loras
+  - cfg_scale
+  - cfg_scale_start_step
+  - cfg_scale_end_step
 
 - added cfg_rescale_multiplier, model, VAE, seamless_x and seemless_y as built-in labels for the metadata_linked node.
 
@@ -95,3 +99,8 @@ Delete the `metadata-linked-nodes` folder. Or rename it to `_metadata-linked-nod
 
 Denoise Latents + Metadata Example
 ![Workflow](images/workflow-denoise_latents_metadata.png)
+
+<BR>
+
+Metadata To LoRA Collection Example
+![alt text](images/workflow-MetaToLoras.png)
