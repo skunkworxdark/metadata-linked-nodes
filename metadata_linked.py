@@ -767,19 +767,27 @@ class MetadataToLorasCollectionOutput(BaseInvocationOutput):
     title="Metadata To LoRA Collection",
     tags=["metadata"],
     category="metadata",
-    version="1.0.0",
+    version="1.1.0",
     classification=Classification.Beta,
 )
 class MetadataToLorasCollectionInvocation(BaseInvocation, WithMetadata):
     """Extracts Lora(s) from metadata into a collection"""
 
+    custom_label: str = InputField(
+        default="loras",
+        description=FieldDescriptions.metadata_item_label,
+        input=Input.Direct,
+    )
     loras: Optional[LoRAField | list[LoRAField]] = InputField(
         default=[], description="LoRA models and weights. May be a single LoRA or collection.", title="LoRAs"
     )
 
     def invoke(self, context: InvocationContext) -> MetadataToLorasCollectionOutput:
         metadata = {} if self.metadata is None else self.metadata.root
-        key = "loras"
+        key: str = self.custom_label.strip()
+        if not key:
+            key = "loras"
+
         if key in metadata:
             loras = metadata[key]
         else:
@@ -798,7 +806,9 @@ class MetadataToLorasCollectionInvocation(BaseInvocation, WithMetadata):
 
         for lora in loras:
             model_key = extract_model_key(lora, "model", "", ModelType.LoRA, context)
-            if model_key != "":
+            if not model_key:
+                model_key = extract_model_key(lora, "lora", "", ModelType.LoRA, context)
+            if model_key:
                 model = get_model(model_key, context)
                 weight = float(lora["weight"])
                 if model.key in added_loras:
