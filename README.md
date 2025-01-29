@@ -104,3 +104,6 @@ Denoise Latents + Metadata Example
 
 Metadata To LoRA Collection Example
 ![alt text](images/workflow-MetaToLoras.png)
+
+Metadata To LoRA Collection Custom Label Example
+![alt text](images/workflow-MetaToLoras2.png)
